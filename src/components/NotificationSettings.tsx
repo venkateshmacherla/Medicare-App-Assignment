@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,29 +7,28 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Mail, Bell } from "lucide-react";
-
 const NotificationSettings = () => {
   const [settings, setSettings] = useState({
     emailNotifications: true,
     emailAddress: "caretaker@example.com",
-    reminderTime: "20:00", // 8 PM
+    reminderTime: "20:00",
+    // 8 PM
     pushNotifications: true,
     criticalAlerts: true,
     missedMedNotification: true,
-    missedMedDelay: "2", // hours
+    missedMedDelay: "2" // hours
   });
-
   const handleSettingChange = (key: string, value: any) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+    setSettings(prev => ({
+      ...prev,
+      [key]: value
+    }));
   };
-
   const handleSaveSettings = () => {
     console.log("Notification settings saved:", settings);
     // Here you would typically save to backend
   };
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -48,26 +46,15 @@ const NotificationSettings = () => {
                   Receive medication alerts via email
                 </p>
               </div>
-              <Switch
-                checked={settings.emailNotifications}
-                onCheckedChange={(checked) => handleSettingChange("emailNotifications", checked)}
-              />
+              <Switch checked={settings.emailNotifications} onCheckedChange={checked => handleSettingChange("emailNotifications", checked)} />
             </div>
 
-            {settings.emailNotifications && (
-              <div className="ml-6 space-y-3">
+            {settings.emailNotifications && <div className="ml-6 space-y-3">
                 <div>
                   <Label htmlFor="email">Email Address</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={settings.emailAddress}
-                    onChange={(e) => handleSettingChange("emailAddress", e.target.value)}
-                    className="mt-1"
-                  />
+                  <Input id="email" type="email" value={settings.emailAddress} onChange={e => handleSettingChange("emailAddress", e.target.value)} className="mt-1" />
                 </div>
-              </div>
-            )}
+              </div>}
           </div>
 
           <Separator />
@@ -81,20 +68,13 @@ const NotificationSettings = () => {
                   Get notified when medication is not taken on time
                 </p>
               </div>
-              <Switch
-                checked={settings.missedMedNotification}
-                onCheckedChange={(checked) => handleSettingChange("missedMedNotification", checked)}
-              />
+              <Switch checked={settings.missedMedNotification} onCheckedChange={checked => handleSettingChange("missedMedNotification", checked)} />
             </div>
 
-            {settings.missedMedNotification && (
-              <div className="ml-6 space-y-3">
+            {settings.missedMedNotification && <div className="ml-6 space-y-3">
                 <div>
                   <Label>Alert me if medication isn't taken within</Label>
-                  <Select
-                    value={settings.missedMedDelay}
-                    onValueChange={(value) => handleSettingChange("missedMedDelay", value)}
-                  >
+                  <Select value={settings.missedMedDelay} onValueChange={value => handleSettingChange("missedMedDelay", value)}>
                     <SelectTrigger className="mt-1">
                       <SelectValue />
                     </SelectTrigger>
@@ -110,36 +90,19 @@ const NotificationSettings = () => {
 
                 <div>
                   <Label>Daily reminder time</Label>
-                  <Input
-                    type="time"
-                    value={settings.reminderTime}
-                    onChange={(e) => handleSettingChange("reminderTime", e.target.value)}
-                    className="mt-1"
-                  />
+                  <Input type="time" value={settings.reminderTime} onChange={e => handleSettingChange("reminderTime", e.target.value)} className="mt-1" />
                   <p className="text-xs text-muted-foreground mt-1">
                     Time to check if today's medication was taken
                   </p>
                 </div>
-              </div>
-            )}
+              </div>}
           </div>
 
-          <Separator />
+          
 
           {/* Critical Alerts */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label className="text-base">Critical Health Alerts</Label>
-                <p className="text-sm text-muted-foreground">
-                  Immediate notifications for emergency situations
-                </p>
-              </div>
-              <Switch
-                checked={settings.criticalAlerts}
-                onCheckedChange={(checked) => handleSettingChange("criticalAlerts", checked)}
-              />
-            </div>
+            
           </div>
         </CardContent>
       </Card>
@@ -179,8 +142,6 @@ const NotificationSettings = () => {
           Save Notification Settings
         </Button>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default NotificationSettings;
