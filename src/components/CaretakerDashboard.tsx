@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,11 +33,11 @@ const CaretakerDashboard = () => {
     { date: "2024-06-06", taken: true, time: "8:20 AM", hasPhoto: false },
   ];
 
-  const upcomingMedications = [
-    { name: "Evening Multivitamin", time: "6:00 PM", status: "pending" },
-    { name: "Morning Vitamin D", time: "8:00 AM (Tomorrow)", status: "scheduled" },
-    { name: "Blood Pressure Medicine", time: "8:30 AM (Tomorrow)", status: "scheduled" },
-  ];
+  const dailyMedication = {
+    name: "Daily Medication Set",
+    time: "8:00 AM",
+    status: takenDates.has(format(new Date(), 'yyyy-MM-dd')) ? "completed" : "pending"
+  };
 
   const handleSendReminderEmail = () => {
     console.log("Sending reminder email to patient...");
@@ -108,18 +107,14 @@ const CaretakerDashboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {upcomingMedications.map((med, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-accent/50 rounded-lg">
-                      <div>
-                        <h4 className="font-medium">{med.name}</h4>
-                        <p className="text-sm text-muted-foreground">{med.time}</p>
-                      </div>
-                      <Badge variant={med.status === "pending" ? "destructive" : "secondary"}>
-                        {med.status === "pending" ? "Pending" : "Scheduled"}
-                      </Badge>
-                    </div>
-                  ))}
+                <div className="flex items-center justify-between p-3 bg-accent/50 rounded-lg">
+                  <div>
+                    <h4 className="font-medium">{dailyMedication.name}</h4>
+                    <p className="text-sm text-muted-foreground">{dailyMedication.time}</p>
+                  </div>
+                  <Badge variant={dailyMedication.status === "pending" ? "destructive" : "secondary"}>
+                    {dailyMedication.status === "pending" ? "Pending" : "Completed"}
+                  </Badge>
                 </div>
               </CardContent>
             </Card>
