@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { Users, Bell, Calendar, Mail, AlertTriangle, Check, Clock } from "lucide-react";
+import { Users, Bell, Calendar, Mail, AlertTriangle, Check, Clock, Camera } from "lucide-react";
 import NotificationSettings from "./NotificationSettings";
 import { format, subDays, isToday } from "date-fns";
 
