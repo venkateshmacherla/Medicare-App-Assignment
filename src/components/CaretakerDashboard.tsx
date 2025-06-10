@@ -5,18 +5,26 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { Users, Bell, Calendar, Mail, AlertTriangle, Check, Clock, Camera } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Users, Bell, Calendar as CalendarIcon, Mail, AlertTriangle, Check, Clock, Camera } from "lucide-react";
 import NotificationSettings from "./NotificationSettings";
-import { format, subDays, isToday } from "date-fns";
+import { format, subDays, isToday, isBefore, startOfDay } from "date-fns";
 
 const CaretakerDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   // Mock data for demonstration
   const patientName = "Eleanor Thompson";
   const adherenceRate = 85;
   const currentStreak = 5;
   const missedDoses = 3;
+
+  // Mock data for taken medications (same as in PatientDashboard)
+  const takenDates = new Set([
+    "2024-06-10", "2024-06-09", "2024-06-07", "2024-06-06", 
+    "2024-06-05", "2024-06-04", "2024-06-02", "2024-06-01"
+  ]);
 
   const recentActivity = [
     { date: "2024-06-10", taken: true, time: "8:30 AM", hasPhoto: true },
@@ -31,6 +39,20 @@ const CaretakerDashboard = () => {
     { name: "Morning Vitamin D", time: "8:00 AM (Tomorrow)", status: "scheduled" },
     { name: "Blood Pressure Medicine", time: "8:30 AM (Tomorrow)", status: "scheduled" },
   ];
+
+  const handleSendReminderEmail = () => {
+    console.log("Sending reminder email to patient...");
+    // Here you would implement email sending functionality
+    alert("Reminder email sent to " + patientName);
+  };
+
+  const handleConfigureNotifications = () => {
+    setActiveTab("notifications");
+  };
+
+  const handleViewCalendar = () => {
+    setActiveTab("calendar");
+  };
 
   return (
     <div className="space-y-6">
@@ -71,8 +93,8 @@ const CaretakerDashboard = () => {
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="activity">Recent Activity</TabsTrigger>
+          <TabsTrigger value="calendar">Calendar View</TabsTrigger>
           <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="reports">Reports</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -81,7 +103,7 @@ const CaretakerDashboard = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-blue-600" />
+                  <CalendarIcon className="w-5 h-5 text-blue-600" />
                   Today's Status
                 </CardTitle>
               </CardHeader>
@@ -108,16 +130,28 @@ const CaretakerDashboard = () => {
                 <CardTitle>Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button className="w-full justify-start" variant="outline">
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  onClick={handleSendReminderEmail}
+                >
                   <Mail className="w-4 h-4 mr-2" />
                   Send Reminder Email
                 </Button>
-                <Button className="w-full justify-start" variant="outline">
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  onClick={handleConfigureNotifications}
+                >
                   <Bell className="w-4 h-4 mr-2" />
                   Configure Notifications
                 </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <Calendar className="w-4 h-4 mr-2" />
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  onClick={handleViewCalendar}
+                >
+                  <CalendarIcon className="w-4 h-4 mr-2" />
                   View Full Calendar
                 </Button>
               </CardContent>
@@ -201,53 +235,118 @@ const CaretakerDashboard = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="notifications">
-          <NotificationSettings />
-        </TabsContent>
-
-        <TabsContent value="reports" className="space-y-6">
+        <TabsContent value="calendar" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Weekly Report</CardTitle>
+              <CardTitle>Medication Calendar Overview</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-6">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600">85%</div>
-                    <div className="text-sm text-muted-foreground">This Week</div>
-                  </div>
-                  <div className="text-center p-4 bg-blue-50 rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600">92%</div>
-                    <div className="text-sm text-muted-foreground">Last Week</div>
-                  </div>
-                  <div className="text-center p-4 bg-orange-50 rounded-lg">
-                    <div className="text-2xl font-bold text-orange-600">78%</div>
-                    <div className="text-sm text-muted-foreground">2 Weeks Ago</div>
-                  </div>
-                  <div className="text-center p-4 bg-purple-50 rounded-lg">
-                    <div className="text-2xl font-bold text-purple-600">88%</div>
-                    <div className="text-sm text-muted-foreground">Average</div>
+              <div className="grid lg:grid-cols-2 gap-6">
+                <div>
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={(date) => date && setSelectedDate(date)}
+                    className="w-full"
+                    modifiersClassNames={{
+                      selected: "bg-blue-600 text-white hover:bg-blue-700",
+                    }}
+                    components={{
+                      DayContent: ({ date }) => {
+                        const dateStr = format(date, 'yyyy-MM-dd');
+                        const isTaken = takenDates.has(dateStr);
+                        const isPast = isBefore(date, startOfDay(new Date()));
+                        const isCurrentDay = isToday(date);
+                        
+                        return (
+                          <div className="relative w-full h-full flex items-center justify-center">
+                            <span>{date.getDate()}</span>
+                            {isTaken && (
+                              <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                                <Check className="w-2 h-2 text-white" />
+                              </div>
+                            )}
+                            {!isTaken && isPast && !isCurrentDay && (
+                              <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-400 rounded-full"></div>
+                            )}
+                          </div>
+                        );
+                      }
+                    }}
+                  />
+                  
+                  <div className="mt-4 space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <span>Medication taken</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-red-400 rounded-full"></div>
+                      <span>Missed medication</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                      <span>Today</span>
+                    </div>
                   </div>
                 </div>
-                
+
                 <div>
-                  <h4 className="font-medium mb-3">Trends & Insights</h4>
-                  <div className="space-y-2 text-sm">
-                    <p className="p-3 bg-blue-50 rounded-lg text-blue-800">
-                      📈 Adherence has improved by 7% compared to last week
-                    </p>
-                    <p className="p-3 bg-green-50 rounded-lg text-green-800">
-                      ✅ {patientName} has been consistent with morning medications
-                    </p>
-                    <p className="p-3 bg-yellow-50 rounded-lg text-yellow-800">
-                      ⚠️ Evening medications are occasionally missed
-                    </p>
+                  <h4 className="font-medium mb-4">
+                    Details for {format(selectedDate, 'MMMM d, yyyy')}
+                  </h4>
+                  
+                  <div className="space-y-4">
+                    {takenDates.has(format(selectedDate, 'yyyy-MM-dd')) ? (
+                      <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Check className="w-5 h-5 text-green-600" />
+                          <span className="font-medium text-green-800">Medication Taken</span>
+                        </div>
+                        <p className="text-sm text-green-700">
+                          {patientName} successfully took their medication on this day.
+                        </p>
+                      </div>
+                    ) : isBefore(selectedDate, startOfDay(new Date())) ? (
+                      <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                        <div className="flex items-center gap-2 mb-2">
+                          <AlertTriangle className="w-5 h-5 text-red-600" />
+                          <span className="font-medium text-red-800">Medication Missed</span>
+                        </div>
+                        <p className="text-sm text-red-700">
+                          {patientName} did not take their medication on this day.
+                        </p>
+                      </div>
+                    ) : isToday(selectedDate) ? (
+                      <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Clock className="w-5 h-5 text-blue-600" />
+                          <span className="font-medium text-blue-800">Today</span>
+                        </div>
+                        <p className="text-sm text-blue-700">
+                          Monitor {patientName}'s medication status for today.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <div className="flex items-center gap-2 mb-2">
+                          <CalendarIcon className="w-5 h-5 text-gray-600" />
+                          <span className="font-medium text-gray-800">Future Date</span>
+                        </div>
+                        <p className="text-sm text-gray-700">
+                          This date is in the future.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="notifications">
+          <NotificationSettings />
         </TabsContent>
       </Tabs>
     </div>
