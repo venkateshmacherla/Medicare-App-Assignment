@@ -1,4 +1,4 @@
-# MediCare Lite - 4-6 Hour Assessment
+# MediCare App - 4-6 Hour Assessment
 
 ## Live Demo (UI only): https://meds-buddy-check.lovable.app/
 
