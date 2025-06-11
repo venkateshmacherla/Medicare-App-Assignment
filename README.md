@@ -1,73 +1,75 @@
-# Welcome to your Lovable project
+# MediCare Lite - 4-6 Hour Assessment
 
-## Project info
+## Current State of the codebase
 
-**URL**: https://lovable.dev/projects/f491c4af-ecc7-4ab3-8c68-36261c6bc840
+This is a React medication management app with dual user roles (patients/caretakers). Currently features:
 
-## How can I edit this code?
+- Role-based dashboard system for each user account with runtime switching (for simplcity)
 
-There are several ways of editing your application.
+- UI for medication tracking with calendar visualization
 
-**Use Lovable**
+- Mock data for streaks, adherence rates, and medication logs
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f491c4af-ecc7-4ab3-8c68-36261c6bc840) and start prompting.
+- Photo upload interface for medication proof
 
-Changes made via Lovable will be committed automatically to this repo.
+- Notification settings UI (non-functional)
 
-**Use your preferred IDE**
+- All data is stored in local state (no persistence)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Tiered Assessment:
 
-Follow these steps:
+### Phase 1 (Required - 4 hours):
+- Supabase authentication setup
+- Basic CRUD for adding medications
+- Basic CRUD for marking medication taken for the day
+- Connect one dashboard to real data
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Phase 2 (Optional - 2 hours):
+- Caretaker-patient real time updates
+- Basic adherence tracking
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Phase 3 (Bonus):
+- File uploads
 
-# Step 3: Install the necessary dependencies.
-npm i
+**Provided:**
+- UI components and styles
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## Required Features:
+1. User login/signup with Supabase Auth
+2. Add medications (name, dosage, frequency)
+3. View medication list
+4. Mark medication as taken today
+5. Simple adherence percentage display
 
-**Edit a file directly in GitHub**
+## Technical Requirements:
+- Use provided React + TypeScript template
+- Integrate Supabase for auth and database
+- Use React Query for data fetching
+- Implement error handling
+- Clean, readable code
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Other Requirements:
+- Use Git with meaningful commits
+- Implement proper form validation
+- Handle loading and error states consistently
+- Write at least 2-3 meaningful tests using vitest
+- Include a README with setup instructions
 
-**Use GitHub Codespaces**
+## Technical Challenges:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+**Include:**
+- Optimistic updates using react query
+- Proper TypeScript generics usage
 
-## What technologies are used for this project?
+## Deployment Bonus:
+Deploy to Vercel/Netlify
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/f491c4af-ecc7-4ab3-8c68-36261c6bc840) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## We will evaluate:
+- Code organization and architecture decisions
+- Error handling and edge cases
+- TypeScript usage (proper typing, no `any`)
+- Component composition and reusability
+- State management approach
+- Performance considerations (unnecessary re-renders)
+- Security awareness (input sanitization)
