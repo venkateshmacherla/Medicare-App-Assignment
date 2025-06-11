@@ -17,7 +17,7 @@ This is a React medication management app with dual user roles (patients/caretak
 - All data is stored in local state (no persistence)
 
 
-## Tiered Assessment:
+## Core Implementation Tasks
 
 ### Phase 1 (Required - 4 hours):
 - Supabase authentication setup
