@@ -1,5 +1,7 @@
 # MediCare Lite - 4-6 Hour Assessment
 
+## Live Demo (UI only): https://meds-buddy-check.lovable.app/
+
 ## Current State of the codebase
 
 This is a React medication management app with dual user roles (patients/caretakers). Currently features:
