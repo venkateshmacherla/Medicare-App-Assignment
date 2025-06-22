@@ -9,7 +9,12 @@ import { Users, Bell, Calendar as CalendarIcon, Mail, AlertTriangle, Check, Cloc
 import NotificationSettings from "./NotificationSettings";
 import { format, subDays, isToday, isBefore, startOfDay } from "date-fns";
 
-const CaretakerDashboard = () => {
+// Add prop type for onSwitchRole
+interface CaretakerDashboardProps {
+  onSwitchRole?: () => void;
+}
+
+const CaretakerDashboard: React.FC<CaretakerDashboardProps> = ({ onSwitchRole }) => {
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
@@ -64,6 +69,12 @@ const CaretakerDashboard = () => {
           <div>
             <h2 className="text-3xl font-bold">Caretaker Dashboard</h2>
             <p className="text-white/90 text-lg">Monitoring {patientName}'s medication adherence</p>
+          </div>
+          {/* Add switch button to patient */}
+          <div className="flex-1 flex justify-end">
+            <Button variant="outline" className="text-black" onClick={onSwitchRole}>
+              Switch to Patient
+            </Button>
           </div>
         </div>
         
