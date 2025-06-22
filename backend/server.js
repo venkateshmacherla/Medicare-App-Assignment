@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const http = require('http'); // <-- Add this
-const { Server } = require('socket.io'); // <-- Add this
+const http = require('http');
+const { Server } = require('socket.io');
 
 const authRoutes = require('./routes/auth');
 const medRoutes = require('./routes/medications');
@@ -14,7 +14,8 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/medications', medRoutes);
 
-const PORT = 5001;
+// Use environment port for deployment platforms like Render
+const PORT = process.env.PORT || 5001;
 
 // --- Create HTTP server and attach Socket.IO ---
 const server = http.createServer(app);
